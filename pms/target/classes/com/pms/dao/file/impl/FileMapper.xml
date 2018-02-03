@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pms.dao.file.FileMapper">
+    <resultMap id="File" type="com.pms.model.file.File">
+        <result property="fileId" column="file_id"/>
+        <result property="fileName" column="file_name"/>
+        <result property="url" column="url"/>
+        <result property="fileClass" column="class"/>
+        <result property="size" column="size"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="delTime" column="del_time"/>
+        <result property="isPrivater" column="is_privater"/>
+    </resultMap>
+
+    <resultMap id="file_reference" type="com.pms.model.filereference.FileReference">
+        <result column="file_id" property="fileId"/>
+        <result column="project_id" property="projectId"/>
+        <result column="user_id" property="userId"/>
+        <result column="team_id" property="teamId"/>
+    </resultMap>
+
+    <select id="selectFileById" resultMap="File" parameterType="com.pms.model.file.File">
+        SELECT file_id,file_name,url,class,size,create_by,create_time,del_flag,del_time,is_privater
+        FROM file
+        WHERE file_id = #{fileId} AND del_flag = 0;
+    </select>
+
+
+    <delete id="deleteFileById">
+        DELETE FROM file
+        WHERE file_id = #{fileId};
+    </delete>
+
+    <insert id="insertFileInfo">
+        INSERT INTO file
+        (file_id,file_name,url,class,size,create_by,create_time,del_flag,del_time,is_privater)
+        VALUES
+        (#{fileId},#{fileName},#{url},#{fileClass},#{size},#{createBy},#{createTime},#{delFlag},#{delTime},#{isPrivater})
+    </insert>
+
+    <update id="updateFileInfo" >
+        UPDATE file
+        <set>
+            file_name = #{fileName}
+        </set>
+        WHERE file_id = #{fileId};
+    </update>
+
+    <update id="deleteFlagById">
+        UPDATE file
+        <set>
+            del_flag = TRUE ,
+            del_time = #{delTime}
+        </set>
+        WHERE file_id = #{fileId};
+    </update>
+
+    <update id="recoverFileById" parameterType="java.lang.Integer">
+        UPDATE file
+        <set>
+            del_flag = FALSE
+        </set>
+        WHERE file_id = #{fileId};
+    </update>
+
+</mapper>
